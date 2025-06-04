@@ -3,210 +3,457 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¿Cuál es tu lugar en Misión?</title>
+    <title>¿Cuál es tu lugar en Misión? ¡Descúbrelo!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .question-container { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #0056b3; text-align: center; margin-bottom: 30px; }
-        h2 { color: #0056b3; margin-top: 0; }
-        ul { list-style: none; padding: 0; }
-        li { margin-bottom: 10px; }
-        .option { background: #e9ecef; border-radius: 5px; padding: 10px; margin-bottom: 5px; }
+        body {
+            font-family: 'Inter', sans-serif; /* Usando Inter como en el ejemplo funcional */
+            line-height: 1.6;
+            margin: 0; /* Quitado el margen de 20px para que Tailwind controle el layout */
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .quiz-container {
+            max-width: 700px; /* Un poco más ancho para preguntas largas */
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .question-block {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+        }
+        .question-block:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            background-color: #f9fafb; /* Tailwind gray-50 */
+        }
+        .btn-primary {
+            background-color: #0056b3; /* Azul del H1 original */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            font-weight: 500;
+            transition: background-color 0.3s;
+            width: 100%; /* Para que ocupe todo el ancho */
+            margin-top: 1.5rem; /* Espacio antes del botón */
+        }
+        .btn-primary:hover {
+            background-color: #004494; /* Un azul un poco más oscuro */
+        }
+        .message-box {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        .message-box-error {
+            background-color: #fee2e2; /* Tailwind red-100 */
+            color: #b91c1c; /* Tailwind red-700 */
+            border: 1px solid #fecaca; /* Tailwind red-300 */
+        }
+        /* Estilos para los radio buttons y labels */
+        label.option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem; /* Reducido un poco el padding */
+            border-radius: 0.375rem;
+            border: 1px solid #d1d5db; /* Tailwind gray-300 */
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        label.option-label:hover {
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+        }
+        label.option-label input[type="radio"] {
+            margin-right: 0.75rem;
+            color: #0056b3; /* Azul principal */
+            width: 1.25rem; /* Ajuste tamaño radio */
+            height: 1.25rem; /* Ajuste tamaño radio */
+        }
+        label.option-label input[type="radio"]:focus {
+            ring: #0056b3;
+        }
+        .options-container .space-y-2 > *:not([hidden]) ~ *:not([hidden]) {
+             --tw-space-y-reverse: 0;
+             margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse))); /* space-y-2 */
+             margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+        }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <h1>¿Cuál es tu lugar en Misión?</h1>
+    <div class="quiz-container">
+        <h1 class="text-3xl font-bold text-center text-[#0056b3] mb-8">¿Cuál es tu lugar en Misión?</h1>
 
-    <div class="question-container">
-        <h2>1. Si fueras un animal de campo, ¿cuál serías y por qué?</h2>
-        <ul>
-            <li class="option"><span>a) La vaca que pasta tranquila.</span></li>
-            <li class="option"><span>b) El caballo bagual: pura energía.</span></li>
-            <li class="option"><span>c) El perro ovejero: que la manada no se desbande.</span></li>
-            <li class="option"><span>d) La gallina ponedora.</span></li>
-        </ul>
+        <div id="quiz-form">
+            <!-- Las preguntas se generarán aquí por JavaScript -->
+        </div>
+
+        <div id="message-area" class="message-box" style="display: none;"></div>
+
+        <button id="submit-btn" class="btn-primary">
+            Mostrar mi Grupo
+        </button>
+
+        <div id="result-area" class="result-box" style="display: none;">
+            <h2 class="text-2xl font-semibold mb-2 text-[#0056b3]" id="result-title"></h2>
+            <p id="result-group" class="text-xl font-bold text-indigo-600"></p>
+            <div id="result-description" class="text-gray-700 mt-2 text-left"></div> <!-- Text-left para descripciones largas -->
+        </div>
     </div>
 
-    <div class="question-container">
-        <h2>2. Si tuvieras que elegir un superpoder sería:</h2>
-        <ul>
-            <li class="option"><span>a) Teletransportación.</span></li>
-            <li class="option"><span>b) Telekinesis o control mental.</span></li>
-            <li class="option"><span>c) Volar.</span></li>
-            <li class="option"><span>d) Superfuerza.</span></li>
-        </ul>
-    </div>
+    <script>
+        // --- Configuración del Quiz ---
+        const quizQuestions = [
+            {
+                id: "q1",
+                text: "Si fueras un animal de campo, ¿cuál serías y por qué?",
+                options: [
+                    { text: "a) La vaca que pasta tranquila.", value: "liturgia" },
+                    { text: "b) El caballo bagual: pura energía.", value: "actividades" },
+                    { text: "c) El perro ovejero: que la manada no se desbande.", value: "logistica" },
+                    { text: "d) La gallina ponedora.", value: "recursos" }
+                ]
+            },
+            {
+                id: "q2",
+                text: "Si tuvieras que elegir un superpoder sería:",
+                options: [
+                    { text: "a) Teletransportación.", value: "logistica" },
+                    { text: "b) Telekinesis o control mental.", value: "liturgia" },
+                    { text: "c) Volar.", value: "actividades" },
+                    { text: "d) Superfuerza.", value: "recursos" }
+                ]
+            },
+            {
+                id: "q3",
+                text: "Imagina que están organizando un evento importante. ¿Cuál de estas tareas te entusiasmaría más asumir?",
+                options: [
+                    { text: "a) Investigar y comparar opciones de lugares, horarios y transporte.", value: "logistica" },
+                    { text: "b) Calcular cuánto dinero se necesita y pensar en cómo conseguirlo.", value: "recursos" },
+                    { text: "c) Diseñar juegos o actividades divertidas para los participantes.", value: "actividades" },
+                    { text: "d) Preparar un momento de reflexión o una pequeña ceremonia para el grupo.", value: "liturgia" }
+                ]
+            },
+            {
+                id: "q4",
+                text: "Ante un problema inesperado, ¿cuál es tu primera reacción?",
+                options: [
+                    { text: "a) Intentar encontrar una solución lógica y organizada.", value: "logistica" },
+                    { text: "b) Pensar en los recursos disponibles y cómo optimizarlos.", value: "recursos" },
+                    { text: "c) Buscar una forma creativa de resolverlo o de cambiar el enfoque.", value: "actividades" },
+                    { text: "d) Ofrecer apoyo emocional y escuchar a quienes están afectados.", value: "liturgia" }
+                ]
+            },
+            {
+                id: "q5",
+                text: "¿Con qué frase estás más de acuerdo?",
+                options: [
+                    { text: "a) \"No hay mal que dure cien años”.", value: "liturgia" },
+                    { text: "b) \"Más vale pájaro en mano que cien volando.\"", value: "recursos" },
+                    { text: "c) \"Al mal tiempo, buena cara.\"", value: "actividades" },
+                    { text: "d) \"El que mucho abarca, poco aprieta.\"", value: "logistica" }
+                ]
+            },
+            {
+                id: "q6",
+                text: "Si tuvieras que elegir un personaje, ¿cuál sería?",
+                options: [
+                    { text: "a) Doctor House.", value: "logistica" },
+                    { text: "b) Joey Tribbiani (Friends).", value: "actividades" },
+                    { text: "c) Ted Mosby (How I Met Your Mother).", value: "liturgia" },
+                    { text: "d) Walter White (Breaking Bad).", value: "recursos" }
+                ]
+            },
+            {
+                id: "q7",
+                text: "¿Con qué snack te identificás más?",
+                options: [
+                    { text: "a) Pizza.", value: "recursos" },
+                    { text: "b) Alfajor de maicena.", value: "liturgia" },
+                    { text: "c) Sándwiches de Miga.", value: "logistica" },
+                    { text: "d) Gomitas/Doritos.", value: "actividades" }
+                ]
+            },
+            {
+                id: "q8",
+                text: "En una juntada, ¿dónde te encontrás?",
+                options: [
+                    { text: "a) En una charla profunda.", value: "liturgia" },
+                    { text: "b) Con el anfitrión, viendo si necesita una mano con algo.", value: "logistica" },
+                    { text: "c) Cerca de la heladera o la mesa de picada, ¡atento/a a que no falte nada!", value: "recursos" },
+                    { text: "d) En el centro de la ronda, tirando chistes y haciendo reír a todos.", value: "actividades" }
+                ]
+            },
+            {
+                id: "q9",
+                text: "Cuando vas a un lugar nuevo, ¿qué es lo primero que hacés o en qué te fijás?",
+                options: [
+                    { text: "a) Me oriento con un mapa o GPS, viendo rutas y puntos de interés.", value: "logistica" },
+                    { text: "b) Me fijo en dónde están los servicios básicos (baños, comida, etc.) y si hay algo que pueda necesitar.", value: "recursos" },
+                    { text: "c) Observo a la gente y pienso en qué actividades o juegos se podrían hacer allí.", value: "actividades" },
+                    { text: "d) Busco un espacio tranquilo o un rincón para poder conectar con el lugar o con mis pensamientos.", value: "liturgia" }
+                ]
+            },
+            { // Esta es la pregunta que el usuario marcó como "7." pero que corresponde a la 10 por secuencia
+                id: "q10",
+                text: "Si tuvieras que organizar un campamento, ¿cuál de estas tareas te parecería más interesante?",
+                options: [
+                    { text: "a) Armar el cronograma de actividades, los turnos y la logística de transporte.", value: "logistica" },
+                    { text: "b) Encargarse de la comida, las provisiones y el presupuesto del campamento.", value: "recursos" },
+                    { text: "c) Crear los juegos, fogones y dinámicas para entretener a todos.", value: "actividades" },
+                    { text: "d) Preparar los momentos de oración y reflexión para el grupo.", value: "liturgia" }
+                ]
+            },
+            {
+                id: "q11",
+                text: "¿Qué olor te levanta el ánimo al instante?",
+                options: [
+                    { text: "a) El de una agenda nueva, papel.", value: "logistica" },
+                    { text: "b) El de pan casero o una torta recién hecha.", value: "recursos" },
+                    { text: "c) El de un sahumerio o una vela aromática, para crear un ambiente tranqui.", value: "liturgia" },
+                    { text: "d) Pochoclos.", value: "actividades" }
+                ]
+            },
+            {
+                id: "q12",
+                text: "En una reunión importante, ¿qué te saca de quicio?",
+                options: [
+                    { text: "a) Que no haya buena onda entre la gente o que falte el respeto.", value: "liturgia" },
+                    { text: "b) Que se malgasten las cosas o que no se cuide lo que se tiene.", value: "recursos" },
+                    { text: "c) Que la gente se aburra o que el ambiente sea un embole.", value: "actividades" },
+                    { text: "d) Que se cuelguen con los horarios o que el orden sea un lío.", value: "logistica" }
+                ]
+            },
+            {
+                id: "q13",
+                text: "Tenés que reemplazar a uno de Los Simuladores, ¿a cuál elegís?",
+                options: [
+                    { text: "a) Pablo Lampone, experto en lo técnico y en \"resolver\".", value: "recursos" },
+                    { text: "b) Mario Santos, la mente maestra de la planificación.", value: "logistica" },
+                    { text: "c) Gabriel Medina, el que escucha y se encarga de la investigación.", value: "liturgia" },
+                    { text: "d) Emilio Ravenna, el actor que se pone en la piel de los personajes.", value: "actividades" }
+                ]
+            },
+            {
+                id: "q14",
+                text: "¿Con qué integrante de la Selección te identificás?",
+                options: [
+                    { text: "a) Tagliafico.", value: "recursos" },
+                    { text: "b) Rodrigo de Paul.", value: "liturgia" },
+                    { text: "c) Lionel Scaloni.", value: "logistica" },
+                    { text: "d) El Dibu Martínez.", value: "actividades" }
+                ]
+            },
+            {
+                id: "q15",
+                text: "¿Qué tipo de voluntariado te moviliza más?",
+                options: [
+                    { text: "a) Juntar donaciones de alimentos o ropa, asegurando que lleguen a quien lo necesita.", value: "recursos" },
+                    { text: "b) Armar juegos y actividades recreativas para los chicos o los abuelos.", value: "actividades" },
+                    { text: "c) Darle una mano a gente que está sola, charlar y hacerles compañía.", value: "liturgia" },
+                    { text: "d) Organizar varios eventos y acompañar desde el armado hasta la ejecución.", value: "logistica" }
+                ]
+            },
+            {
+                id: "q16",
+                text: "Si tuvieras que armar una mochila para un viaje al norte, ¿en qué pensarías primero?",
+                options: [
+                    { text: "a) En algo chiquito que te conecte con tus afectos o un libro para reflexionar.", value: "liturgia" },
+                    { text: "b) En la lista que armé con todo lo que tengo que llevar (un poco de todo).", value: "recursos" },
+                    { text: "c) En el mapa de la ruta, los paradores y los posibles imprevistos.", value: "logistica" },
+                    { text: "d) En una buena playlist de música y algún juego de cartas para los ratos libres.", value: "actividades" }
+                ]
+            },
+            // Pregunta 17 omitida según la lista del usuario
+            {
+                id: "q18",
+                text: "¿Qué tipo de contenido prefieres ver o leer en tu tiempo libre?",
+                options: [
+                    { text: "a) Documentales sobre cómo funcionan las cosas o series de investigación.", value: "logistica" },
+                    { text: "b) Revistas de economía, finanzas o consejos para el hogar.", value: "recursos" },
+                    { text: "c) Videos de TikTok, comedia, tutoriales creativos o juegos.", value: "actividades" },
+                    { text: "d) Libros de autoayuda, documentales espirituales o podcasts de reflexión.", value: "liturgia" }
+                ]
+            },
+            {
+                id: "q19",
+                text: "¿Qué tarea doméstica te resulta menos tediosa?",
+                options: [
+                    { text: "a) Organizar cosas.", value: "logistica" },
+                    { text: "b) Hacer la lista de compras y asegurarte de no gastar de más.", value: "recursos" },
+                    { text: "c) Preparar una comida divertida o decorar un espacio.", value: "actividades" },
+                    { text: "d) Disfrutar de un momento de silencio y tranquilidad en casa.", value: "liturgia" }
+                ]
+            },
+            {
+                id: "q20",
+                text: "¿Con qué personaje de Bob Esponja te sentís más identificado/a?",
+                options: [
+                    { text: "a) Arenita.", value: "liturgia" },
+                    { text: "b) Plancton.", value: "logistica" },
+                    { text: "c) Don Cangrejo.", value: "recursos" },
+                    { text: "d) Bob Esponja.", value: "actividades" }
+                ]
+            }
+        ];
 
-    <div class="question-container">
-        <h2>3. Imagina que están organizando un evento importante. ¿Cuál de estas tareas te entusiasmaría más asumir?</h2>
-        <ul>
-            <li class="option"><span>a) Investigar y comparar opciones de lugares, horarios y transporte.</span></li>
-            <li class="option"><span>b) Calcular cuánto dinero se necesita y pensar en cómo conseguirlo.</span></li>
-            <li class="option"><span>c) Diseñar juegos o actividades divertidas para los participantes.</span></li>
-            <li class="option"><span>d) Preparar un momento de reflexión o una pequeña ceremonia para el grupo.</span></li>
-        </ul>
-    </div>
+        const groupDetails = {
+            logistica: {
+                name: "LOGÍSTICA",
+                description: "¡Parece que tienes alma de organizador/a! Te encantan los desafíos de planificación, la anticipación y asegurarte de que cada detalle esté en su lugar. Eres el cerebro detrás de escena, garantizando que cada pieza encaje para que la misión sea un éxito."
+            },
+            recursos: {
+                name: "RECURSOS",
+                description: "¡Tienes una gran habilidad para la gestión y la optimización! Eres práctico/a y eficiente, con un don para administrar lo que se tiene y conseguir lo que falta. Tu capacidad para gestionar y optimizar es fundamental para la misión."
+            },
+            actividades: {
+                name: "ACTIVIDADES",
+                description: "¡Eres una fuente de energía, creatividad y alegría! Te encanta generar momentos divertidos, interactuar con los más pequeños y transformar las reflexiones en experiencias dinámicas. Tu entusiasmo y espontaneidad son clave para el espíritu de la misión."
+            },
+            liturgia: {
+                name: "LITURGIA",
+                description: "¡Eres una persona reflexiva y sensible, con una profunda conexión espiritual! Te preocupas por el bienestar del alma y te gusta crear espacios para la contemplación, la oración y la cercanía con lo trascendente. Tu capacidad para guiar momentos significativos es un pilar de la misión."
+            }
+        };
 
-    <div class="question-container">
-        <h2>4. Ante un problema inesperado, ¿cuál es tu primera reacción?</h2>
-        <ul>
-            <li class="option"><span>a) Intentar encontrar una solución lógica y organizada.</span></li>
-            <li class="option"><span>b) Pensar en los recursos disponibles y cómo optimizarlos.</span></li>
-            <li class="option"><span>c) Buscar una forma creativa de resolverlo o de cambiar el enfoque.</span></li>
-            <li class="option"><span>d) Ofrecer apoyo emocional y escuchar a quienes están afectados.</span></li>
-        </ul>
-    </div>
+        // --- Lógica del Quiz ---
+        const quizForm = document.getElementById('quiz-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultArea = document.getElementById('result-area');
+        const resultTitle = document.getElementById('result-title');
+        const resultGroup = document.getElementById('result-group');
+        const resultDescription = document.getElementById('result-description');
+        const messageArea = document.getElementById('message-area');
 
-    <div class="question-container">
-        <h2>5. ¿Con qué frase estás más de acuerdo?</h2>
-        <ul>
-            <li class="option"><span>a) "No hay mal que dure cien años”.</span></li>
-            <li class="option"><span>b) "Más vale pájaro en mano que cien volando."</span></li>
-            <li class="option"><span>c) "Al mal tiempo, buena cara."</span></li>
-            <li class="option"><span>d) "El que mucho abarca, poco aprieta."</span></li>
-        </ul>
-    </div>
+        function showMessage(text, type = 'error') {
+            messageArea.textContent = text;
+            messageArea.className = `message-box ${type === 'error' ? 'message-box-error' : ''}`; // Si no es error, no aplica clase extra de color
+            messageArea.style.display = 'block';
+        }
 
-    <div class="question-container">
-        <h2>6. Si tuvieras que elegir un personaje, ¿cuál sería?</h2>
-        <ul>
-            <li class="option"><span>a) Doctor House.</span></li>
-            <li class="option"><span>b) Joey Tribbiani (Friends).</span></li>
-            <li class="option"><span>c) Ted Mosby (How I Met Your Mother).</span></li>
-            <li class="option"><span>d) Walter White (Breaking Bad).</span></li>
-        </ul>
-    </div>
+        function hideMessage() {
+            messageArea.style.display = 'none';
+        }
 
-    <div class="question-container">
-        <h2>7. ¿Con qué snack te identificás más?</h2>
-        <ul>
-            <li class="option"><span>a) Pizza.</span></li>
-            <li class="option"><span>b) Alfajor de maicena.</span></li>
-            <li class="option"><span>c) Sándwiches de Miga.</span></li>
-            <li class="option"><span>d) Gomitas/Doritos.</span></li>
-        </ul>
-    </div>
+        function renderQuestions() {
+            let html = "";
+            quizQuestions.forEach((question, index) => {
+                // Usar el número de la pregunta del texto de la pregunta si está disponible (ej. "1. ...", "18. ...")
+                // o el índice + 1 como fallback.
+                const questionNumberText = question.text.split('.')[0];
+                const displayIndex = !isNaN(parseInt(questionNumberText)) ? questionNumberText : (index + 1);
 
-    <div class="question-container">
-        <h2>8. En una juntada, ¿dónde te encontrás?</h2>
-        <ul>
-            <li class="option"><span>a) En una charla profunda.</span></li>
-            <li class="option"><span>b) Con el anfitrión, viendo si necesita una mano con algo.</span></li>
-            <li class="option"><span>c) Cerca de la heladera o la mesa de picada, ¡atento/a a que no falte nada!</span></li>
-            <li class="option"><span>d) En el centro de la ronda, tirando chistes y haciendo reír a todos.</span></li>
-        </ul>
-    </div>
+                html += `
+                    <div class="question-block" id="${question.id}">
+                        <p class="text-lg font-semibold text-gray-700 mb-3">${question.text}</p> <!-- Se mantiene el texto original de la pregunta -->
+                        <div class="options-container space-y-2">
+                `;
+                question.options.forEach(option => {
+                    html += `
+                        <label class="option-label">
+                            <input type="radio" name="${question.id}" value="${option.value}" class="form-radio">
+                            <span class="ml-3 text-gray-700">${option.text}</span>
+                        </label>
+                    `;
+                });
+                html += `</div></div>`;
+            });
+            quizForm.innerHTML = html;
+        }
 
-    <div class="question-container">
-        <h2>9. Cuando vas a un lugar nuevo, ¿qué es lo primero que hacés o en qué te fijás?</h2>
-        <ul>
-            <li class="option"><span>a) Me oriento con un mapa o GPS, viendo rutas y puntos de interés.</span></li>
-            <li class="option"><span>b) Me fijo en dónde están los servicios básicos (baños, comida, etc.) y si hay algo que pueda necesitar.</span></li>
-            <li class="option"><span>c) Observo a la gente y pienso en qué actividades o juegos se podrían hacer allí.</span></li>
-            <li class="option"><span>d) Busco un espacio tranquilo o un rincón para poder conectar con el lugar o con mis pensamientos.</span></li>
-        </ul>
-    </div>
+        function calculateResult() {
+            const scores = {
+                logistica: 0,
+                recursos: 0,
+                actividades: 0,
+                liturgia: 0
+            };
+            let answeredQuestions = 0;
 
-    <div class="question-container">
-        <h2>10. Si tuvieras que organizar un campamento, ¿cuál de estas tareas te parecería más interesante?</h2>
-        <ul>
-            <li class="option"><span>a) Armar el cronograma de actividades, los turnos y la logística de transporte.</span></li>
-            <li class="option"><span>b) Encargarse de la comida, las provisiones y el presupuesto del campamento.</span></li>
-            <li class="option"><span>c) Crear los juegos, fogones y dinámicas para entretener a todos.</span></li>
-            <li class="option"><span>d) Preparar los momentos de oración y reflexión para el grupo.</span></li>
-        </ul>
-    </div>
+            quizQuestions.forEach(question => {
+                const selectedOption = document.querySelector(`input[name="${question.id}"]:checked`);
+                if (selectedOption) {
+                    scores[selectedOption.value]++;
+                    answeredQuestions++;
+                }
+            });
 
-    <div class="question-container">
-        <h2>11. ¿Qué olor te levanta el ánimo al instante?</h2>
-        <ul>
-            <li class="option"><span>a) El de una agenda nueva, papel.</span></li>
-            <li class="option"><span>b) El de pan casero o una torta recién hecha.</span></li>
-            <li class="option"><span>c) El de un sahumerio o una vela aromática, para crear un ambiente tranqui.</span></li>
-            <li class="option"><span>d) Pochoclos.</span></li>
-        </ul>
-    </div>
+            if (answeredQuestions < quizQuestions.length) {
+                showMessage("Por favor, responde todas las preguntas para ver tu grupo.");
+                return null;
+            }
+            
+            hideMessage();
 
-    <div class="question-container">
-        <h2>12. En una reunión importante, ¿qué te saca de quicio?</h2>
-        <ul>
-            <li class="option"><span>a) Que no haya buena onda entre la gente o que falte el respeto.</span></li>
-            <li class="option"><span>b) Que se malgasten las cosas o que no se cuide lo que se tiene.</span></li>
-            <li class="option"><span>c) Que la gente se aburra o que el ambiente sea un embole.</span></li>
-            <li class="option"><span>d) Que se cuelguen con los horarios o que el orden sea un lío.</span></li>
-        </ul>
-    </div>
+            let maxScore = -1;
+            for (const group in scores) {
+                if (scores[group] > maxScore) {
+                    maxScore = scores[group];
+                }
+            }
+            
+            const tiedGroups = [];
+            for (const group in scores) {
+                if (scores[group] === maxScore && maxScore > 0) { 
+                    tiedGroups.push(group);
+                }
+            }
 
-    <div class="question-container">
-        <h2>13. Tenés que reemplazar a uno de Los Simuladores, ¿a cuál elegís?</h2>
-        <ul>
-            <li class="option"><span>a) Pablo Lampone, experto en lo técnico y en "resolver".</span></li>
-            <li class="option"><span>b) Mario Santos, la mente maestra de la planificación.</span></li>
-            <li class="option"><span>c) Gabriel Medina, el que escucha y se encarga de la investigación.</span></li>
-            <li class="option"><span>d) Emilio Ravenna, el actor que se pone en la piel de los personajes.</span></li>
-        </ul>
-    </div>
+            if (tiedGroups.length === 0) {
+                 // Esto podría pasar si todas las preguntas son respondidas pero todas las opciones llevan a un score de 0,
+                 // o si no hay preguntas. Con la configuración actual, es improbable si se responden.
+                showMessage("No se pudo determinar un grupo. Intenta nuevamente.", "error");
+                return null;
+            }
 
-    <div class="question-container">
-        <h2>14. ¿Con qué integrante de la Selección te identificás?</h2>
-        <ul>
-            <li class="option"><span>a) Tagliafico.</span></li>
-            <li class="option"><span>b) Rodrigo de Paul.</span></li>
-            <li class="option"><span>c) Lionel Scaloni.</span></li>
-            <li class="option"><span>d) El Dibu Martínez.</span></li>
-        </ul>
-    </div>
+            return tiedGroups; // Devuelve un array con los nombres de los grupos empatados (o uno solo)
+        }
 
-    <div class="question-container">
-        <h2>15. ¿Qué tipo de voluntariado te moviliza más?</h2>
-        <ul>
-            <li class="option"><span>a) Juntar donaciones de alimentos o ropa, asegurando que lleguen a quien lo necesita.</span></li>
-            <li class="option"><span>b) Armar juegos y actividades recreativas para los chicos o los abuelos.</span></li>
-            <li class="option"><span>c) Darle una mano a gente que está sola, charlar y hacerles compañía.</span></li>
-            <li class="option"><span>d) Organizar varios eventos y acompañar desde el armado hasta la ejecución.</span></li>
-        </ul>
-    </div>
+        submitBtn.addEventListener('click', () => {
+            const resultKeys = calculateResult(); 
+            if (resultKeys && resultKeys.length > 0) {
+                let groupNames = [];
+                let groupDescriptionsHTML = "";
 
-    <div class="question-container">
-        <h2>16. Si tuvieras que armar una mochila para un viaje al norte, ¿en qué pensarías primero?</h2>
-        <ul>
-            <li class="option"><span>a) En algo chiquito que te conecte con tus afectos o un libro para reflexionar.</span></li>
-            <li class="option"><span>b) En la lista que armé con todo lo que tengo que llevar (un poco de todo).</span></li>
-            <li class="option"><span>c) En el mapa de la ruta, los paradores y los posibles imprevistos.</span></li>
-            <li class="option"><span>d) En una buena playlist de música y algún juego de cartas para los ratos libres.</span></li>
-        </ul>
-    </div>
+                if (resultKeys.length > 1) {
+                    resultTitle.textContent = "¡Podrías encajar en varios grupos!";
+                    resultKeys.forEach((key, index) => {
+                        if (groupDetails[key]) {
+                            groupNames.push(groupDetails[key].name);
+                            groupDescriptionsHTML += `<div class="mb-4"><strong>${groupDetails[key].name}:</strong> ${groupDetails[key].description}</div>`;
+                        }
+                    });
+                    resultGroup.textContent = groupNames.join(" y ");
+                    resultDescription.innerHTML = groupDescriptionsHTML;
+                } else {
+                    const groupInfo = groupDetails[resultKeys[0]];
+                    resultTitle.textContent = "Perteneces al grupo:";
+                    resultGroup.textContent = groupInfo.name;
+                    resultDescription.innerHTML = `<p>${groupInfo.description}</p>`;
+                }
+                
+                resultArea.style.display = 'block';
+                resultArea.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                resultArea.style.display = 'none';
+            }
+        });
 
-    <div class="question-container">
-        <h2>18. ¿Qué tipo de contenido prefieres ver o leer en tu tiempo libre?</h2>
-        <ul>
-            <li class="option"><span>a) Documentales sobre cómo funcionan las cosas o series de investigación.</span></li>
-            <li class="option"><span>b) Revistas de economía, finanzas o consejos para el hogar.</span></li>
-            <li class="option"><span>c) Videos de TikTok, comedia, tutoriales creativos o juegos.</span></li>
-            <li class="option"><span>d) Libros de autoayuda, documentales espirituales o podcasts de reflexión.</span></li>
-        </ul>
-    </div>
-
-    <div class="question-container">
-        <h2>19. ¿Qué tarea doméstica te resulta menos tediosa?</h2>
-        <ul>
-            <li class="option"><span>a) Organizar cosas.</span></li>
-            <li class="option"><span>b) Hacer la lista de compras y asegurarte de no gastar de más.</span></li>
-            <li class="option"><span>c) Preparar una comida divertida o decorar un espacio.</span></li>
-            <li class="option"><span>d) Disfrutar de un momento de silencio y tranquilidad en casa.</span></li>
-        </ul>
-    </div>
-
-    <div class="question-container">
-        <h2>20. ¿Con qué personaje de Bob Esponja te sentís más identificado/a?</h2>
-        <ul>
-            <li class="option"><span>a) Arenita.</span></li>
-            <li class="option"><span>b) Plancton.</span></li>
-            <li class="option"><span>c) Don Cangrejo.</span></li>
-            <li class="option"><span>d) Bob Esponja.</span></li>
-        </ul>
-    </div>
+        renderQuestions();
+    </script>
 
 </body>
 </html>
